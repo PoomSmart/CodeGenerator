@@ -84,7 +84,8 @@ class CodePanel extends JPanel {
 					shiftTop - textGap);
 			for (int y = 0; y < bounds.height; y++) {
 				// FIXME: Check this
-				Info info = map.get(new CellPosition<String, Integer>(bounds.height - y - 1, bounds.width - x - 1));
+				CellPosition<String, Integer> position = new CellPosition<String, Integer>(bounds.height - y - 1, bounds.width - x - 1);
+				Info info = map.get(position);
 				if (info != null) {
 					int idx = step;
 					List<Action> actions = info.getActions();
@@ -94,6 +95,7 @@ class CodePanel extends JPanel {
 					g.setColor(Action.colorWithType(actions.get(idx).getType()));
 					g.fillRect(shiftLeft + x * tileWidth, shiftTop + y * tileHeight, tileWidth, tileHeight);
 				}
+				position = null;
 			}
 			g.setColor(Color.white);
 			g.drawLine(shiftLeft + x * tileWidth, shiftTop, shiftLeft + x * tileWidth, absoluteSize.height);

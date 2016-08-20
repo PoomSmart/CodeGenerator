@@ -240,7 +240,9 @@ public class Info {
 			appendNumber(sb, level * steps + 1, level * steps + perRow);
 			level = 0;
 		}
-		return sb.toString();
+		String str = sb.toString();
+		sb = null;
+		return str;
 	}
 
 	public String toString() {

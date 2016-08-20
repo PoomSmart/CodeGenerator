@@ -32,6 +32,8 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLineSpacingRule;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 
+// TODO: Fix memory management
+
 public class Generator2 {
 
 	public static boolean writeToFile = true;

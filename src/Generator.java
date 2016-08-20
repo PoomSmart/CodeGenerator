@@ -76,6 +76,7 @@ public class Generator {
 				map.get(pos).addAction(new Action(Action.Type.White, sheetNumber));
 		} else
 			map.get(pos).addAction(new Action(Action.Type.Fallback, sheetNumber));
+		pos = null;
 	}
 
 	private static void writeMapToFiles(Map<CellPosition<String, Integer>, Info> map, int fontSize, String outputPath) {
@@ -87,8 +88,11 @@ public class Generator {
 				XWPFDocument doc = new XWPFDocument();
 				XWPFParagraph paragraph = doc.createParagraph();
 				addParagraphFromInfo(info, paragraph, fontSize);
-				doc.write(new FileOutputStream(String.format("%s/%s.docx", outputPath, pos)));
+				FileOutputStream stream = new FileOutputStream(String.format("%s/%s.docx", outputPath, pos));
+				doc.write(stream);
 				doc.close();
+				stream = null;
+				doc = null;
 			} catch (IOException e) {
 				ErrorReporter.report(e);
 			}
@@ -243,6 +247,7 @@ public class Generator {
 				}
 			}
 			wb.close();
+			wb = null;
 		} catch (EncryptedDocumentException | IOException e) {
 			ErrorReporter.report(e);
 		}
@@ -319,8 +324,10 @@ public class Generator {
 
 			if (!singleFile) {
 				try {
-					document.write(new FileOutputStream(String.format("%s/%s.docx", outputPath, position)));
+					FileOutputStream stream = new FileOutputStream(String.format("%s/%s.docx", outputPath, position));
+					document.write(stream);
 					document.close();
+					stream = null;
 				} catch (IOException e) {
 					ErrorReporter.report(e);
 				}
@@ -338,6 +345,7 @@ public class Generator {
 				ErrorReporter.report(e);
 			}
 		}
+		document = null;
 	}
 
 	private static boolean hasAnyAction(String text) {
