@@ -16,10 +16,11 @@ import javax.swing.event.DocumentListener;
 public class MainDialog extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
+	public static MainDialog currentDialog;
 	
 	private JTextField patternNameField;
-	private JTextField numRowsField;
-	private JTextField numColsField;
+	public JTextField numRowsField;
+	public JTextField numColsField;
 	private JTextField rowsPerPageField;
 	private JTextField framesPerRowField;
 	private JTextField gapField;
@@ -30,7 +31,7 @@ public class MainDialog extends JFrame {
 	
 	private static final Font font = new Font("SansSerif", Font.TRUETYPE_FONT, 18);
 	
-	private static int parseInt(String string, int defaultValue) {
+	public static int parseInt(String string, int defaultValue) {
 		if (string == null)
 			return defaultValue;
 		if (string.isEmpty())
@@ -76,9 +77,9 @@ public class MainDialog extends JFrame {
 		createConstantLabel(frame, ".CODE.", 23, JLabel.RIGHT);
 		createConstantLabel(frame, "Generator", 23, JLabel.LEFT);
 		frame.patternNameField = createTextField(frame, "Filename: ");
-		frame.numRowsField = createTextField(frame, "Rows: ", "10");
+		frame.numRowsField = createTextField(frame, "Rows: ", "8");
 		frame.setNumericTextField(frame.numRowsField);
-		frame.numColsField = createTextField(frame, "Columns: ", "10");
+		frame.numColsField = createTextField(frame, "Columns: ", "8");
 		frame.setNumericTextField(frame.numColsField);
 		frame.rowsPerPageField = createTextField(frame, "Rows per page: ", "8");
 		frame.setNumericTextField(frame.rowsPerPageField);
@@ -104,8 +105,8 @@ public class MainDialog extends JFrame {
 				Generator.sheetExclusion = Generator.frameSimplification = false;
 				String fileName = frame.patternNameField.getText().replace(".xlsx", "");
 				int fps = parseInt(frame.fpsField.getText(), 24);
-				int numRows = parseInt(frame.numRowsField.getText(), 10);
-				int numCols = parseInt(frame.numColsField.getText(), 10);
+				int numRows = parseInt(frame.numRowsField.getText(), 8);
+				int numCols = parseInt(frame.numColsField.getText(), 8);
 				int rowsPerPage = parseInt(frame.rowsPerPageField.getText(), 8);
 				int framesPerRow = parseInt(frame.framesPerRowField.getText(), 4);
 				// Fix laziness
@@ -124,6 +125,7 @@ public class MainDialog extends JFrame {
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		frame.setVisible(true);
+		currentDialog = frame;
 	}
 	
 	@SuppressWarnings("unused")

@@ -84,7 +84,7 @@ class CodePanel extends JPanel {
 					shiftTop - textGap);
 			for (int y = 0; y < bounds.height; y++) {
 				// FIXME: Check this
-				CellPosition<String, Integer> position = new CellPosition<String, Integer>(bounds.height - y - 1, bounds.width - x - 1);
+				CellPosition<String, Integer> position = new CellPosition<String, Integer>(bounds.width - x - 1, bounds.height - y - 1);
 				Info info = map.get(position);
 				if (info != null) {
 					int idx = step;

@@ -63,7 +63,7 @@ public class Generator {
 		// FIXME: validate
 		int r = numRows - i - 1;
 		int c = numCols - j - 1;
-		CellPosition<String, Integer> pos = new CellPosition<String, Integer>(r, c);
+		CellPosition<String, Integer> pos = new CellPosition<String, Integer>(c, r);
 		if (!map.containsKey(pos))
 			map.put(pos, new Info(pos, numberOfSteps, String.format("%dx%d", numRows, numCols), currentMusic));
 		XSSFCellStyle style = cell.getCellStyle();
@@ -224,7 +224,7 @@ public class Generator {
 			}
 			currentMap = map;
 			if (visualize) {
-				CodeVisualizer vis = new CodeVisualizer(map, new Dimension(numRows, numCols), fps, totalFrames);
+				CodeVisualizer vis = new CodeVisualizer(map, new Dimension(numCols, numRows), fps, totalFrames);
 				vis.setVisible(true);
 				vis.setLocationRelativeTo(null);
 				Thread t = new Thread() {
@@ -378,7 +378,8 @@ public class Generator {
 		writeToFile = visualize = false;
 		sheetExclusion = frameSimplification = true;
 		int fps = 8;
-		int numRows = 10, numCols = 10;
+		int numRows = MainDialog.parseInt(MainDialog.currentDialog.numRowsField.getText(), 8);
+		int numCols = MainDialog.parseInt(MainDialog.currentDialog.numColsField.getText(), 8);
 		int rowsPerPage = 8;
 		int totalSheets = -1;
 		int framesPerRow = 4;
