@@ -394,7 +394,10 @@ public class Generator {
 		String outputPath = "Output/Both";
 		createPathIfNecessary(outputPath);
 		int answer = JOptionPane.showConfirmDialog(null, "Single file?", "Generator", JOptionPane.YES_NO_OPTION);
-		generateCodesFromMaps(etMap, rocketeerMap, fontSize, outputPath, answer == JOptionPane.YES_OPTION);
+		if (answer == JOptionPane.YES_OPTION)
+			generateCodesFromMaps(etMap, rocketeerMap, fontSize, outputPath, true);
+		else if (answer == JOptionPane.NO_OPTION)
+			generateCodesFromMaps(etMap, rocketeerMap, fontSize, outputPath, false);
 	}
 
 	/**
