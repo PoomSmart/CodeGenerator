@@ -170,31 +170,6 @@ public class Generator {
 				int framesPerPage = framesPerRow * (rowsPerPage + ((ns == 4 && filename.equals("Rocketeer")) ? 2 : 0));
 				for (int fn = 0; fn < framesPerPage; fn++) {
 					advance = false;
-					if (frameSimplification) {
-						// Note: read only last frame for each row - Mit
-						if (filename.equals("Rocketeer")) {
-							// there is heading group, so ns is shifted by one
-							// skip non-last frame
-							if ((fn + 1) % framesPerRow != 0) {
-								// for heading Group, all
-								// for Group 1, all
-								// for Group 2, only first 8 frames are ignored
-								// for Group 3, all
-								// for Group 4, only first 16 frames are eligible
-								if (ns == 0 || ns == 1 || (ns == 2 && fn >= 8) || ns == 3 || (ns == 4 && fn < 16))
-									continue;
-							}
-						} else if (filename.equals("ET")) {
-							if (ns <= 3 || ns == 6) {
-								if ((fn + 1) % framesPerRow != 0) {
-									// for non-Group 3, do so
-									// for Group 3, frame 6-11 and 18-23
-									if (ns != 3 || (ns == 3 && ((fn >= 6 && fn <= 11) || (fn >= 18 && fn <= 23))))
-										continue;
-								}
-							}
-						}
-					}
 					int foi = (fn / framesPerRow) * (gap + numRows);
 					int foj = (fn % framesPerRow) * (gap + numCols);
 					totalFrames++;
@@ -269,85 +244,6 @@ public class Generator {
 		spacing.setLine(BigInteger.valueOf(240));
 	}
 
-	private static void generateCodesFromMaps(Map<CellPosition<String, Integer>, Info> leftMap,
-			Map<CellPosition<String, Integer>, Info> rightMap, int fontSize, String outputPath, boolean singleFile) {
-		// Either map is okay for position iteration
-		XWPFDocument document = null;
-		if (singleFile)
-			document = new XWPFDocument();
-		for (CellPosition<String, Integer> position : leftMap.keySet()) {
-			Info leftInfo = leftMap.get(position);
-			Info rightInfo = rightMap.get(position);
-			if (!singleFile || document == null)
-				document = new XWPFDocument();
-
-			// Narrow margin
-			CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
-			CTPageMar pageMar = sectPr.addNewPgMar();
-			pageMar.setLeft(BigInteger.valueOf(720L));
-			pageMar.setTop(BigInteger.valueOf(720L));
-			pageMar.setRight(BigInteger.valueOf(720L));
-			pageMar.setBottom(BigInteger.valueOf(720L));
-
-			// Paper size
-			if (!sectPr.isSetPgSz())
-				sectPr.addNewPgSz();
-			CTPageSz pageSize = sectPr.getPgSz();
-			pageSize.setW(BigInteger.valueOf(595 * 20));
-			pageSize.setH(BigInteger.valueOf(842 * 20));
-
-			// Table
-			XWPFTable table = document.createTable(1, 2);
-			table.setCellMargins(0, 0, 0, 0);
-			// Auto-fit table
-			CTTbl table2 = table.getCTTbl();
-			CTTblPr pr = table2.getTblPr();
-			CTTblWidth tblW = pr.getTblW();
-			tblW.setW(BigInteger.valueOf(5000));
-			tblW.setType(STTblWidth.PCT);
-			pr.setTblW(tblW);
-			pr.unsetTblBorders();
-			table2.setTblPr(pr);
-
-			XWPFTableCell leftCell = table.getRow(0).getCell(0);
-			XWPFParagraph leftParagraph = leftCell.addParagraph();
-			leftCell.removeParagraph(0);
-			setSingleLineSpacing(leftParagraph);
-			addParagraphFromInfo(leftInfo, leftParagraph, fontSize);
-			reapplyBold(leftCell);
-			XWPFTableCell rightCell = table.getRow(0).getCell(1);
-			XWPFParagraph rightParagraph = rightCell.addParagraph();
-			rightCell.removeParagraph(0);
-			setSingleLineSpacing(rightParagraph);
-			addParagraphFromInfo(rightInfo, rightParagraph, fontSize);
-			reapplyBold(rightCell);
-
-			if (!singleFile) {
-				try {
-					FileOutputStream stream = new FileOutputStream(String.format("%s/%s.docx", outputPath, position));
-					document.write(stream);
-					document.close();
-					stream = null;
-				} catch (IOException e) {
-					ErrorReporter.report(e);
-				}
-			} else {
-				// advance to next page
-				XWPFParagraph paragraph = document.createParagraph();
-				paragraph.createRun().addBreak(BreakType.PAGE);
-			}
-		}
-		if (singleFile) {
-			try {
-				document.write(new FileOutputStream(String.format("%s/All.docx", outputPath)));
-				document.close();
-			} catch (IOException e) {
-				ErrorReporter.report(e);
-			}
-		}
-		document = null;
-	}
-
 	private static boolean hasAnyAction(String text) {
 		for (Action.Type type : Action.boldableTypes()) {
 			String stype = type.toString();
@@ -372,32 +268,6 @@ public class Generator {
 				run.setBold(true);
 			addParagraphFromData(run, subcontent, paragraph, 10);
 		}
-	}
-
-	public static void workWithTwoMusics() {
-		writeToFile = visualize = false;
-		sheetExclusion = frameSimplification = true;
-		int fps = 8;
-		int numRows = MainDialog.parseInt(MainDialog.currentDialog.numRowsField.getText(), 8);
-		int numCols = MainDialog.parseInt(MainDialog.currentDialog.numColsField.getText(), 8);
-		int rowsPerPage = 8;
-		int totalSheets = -1;
-		int framesPerRow = 4;
-		int gap = 1;
-		int fontSize = 10;
-		// When in doubt, gather all data into maps first
-		workWithPattern("Rocketeer", fps, numRows, numCols, rowsPerPage, totalSheets, framesPerRow, gap, fontSize);
-		Map<CellPosition<String, Integer>, Info> rocketeerMap = currentMap;
-		framesPerRow = 3;
-		workWithPattern("ET", fps, numRows, numCols, rowsPerPage, totalSheets, framesPerRow, gap, fontSize);
-		Map<CellPosition<String, Integer>, Info> etMap = currentMap;
-		String outputPath = "Output/Both";
-		createPathIfNecessary(outputPath);
-		int answer = JOptionPane.showConfirmDialog(null, "Single file?", "Generator", JOptionPane.YES_NO_OPTION);
-		if (answer == JOptionPane.YES_OPTION)
-			generateCodesFromMaps(etMap, rocketeerMap, fontSize, outputPath, true);
-		else if (answer == JOptionPane.NO_OPTION)
-			generateCodesFromMaps(etMap, rocketeerMap, fontSize, outputPath, false);
 	}
 
 	/**

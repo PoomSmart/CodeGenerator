@@ -92,12 +92,6 @@ public class MainDialog extends JFrame {
 		frame.fpsField = createTextField(frame, "FPS: ", "8");
 		frame.setNumericTextField(frame.fpsField);
 		frame.dualButton = createButton(frame, "Do Both");
-		frame.dualButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Generator.workWithTwoMusics();
-				JOptionPane.showMessageDialog(frame, "Done");
-			}
-		});
 		frame.generateButton = createButton(frame, "Generate");
 		frame.generateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
