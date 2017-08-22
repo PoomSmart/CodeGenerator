@@ -73,9 +73,9 @@ public class Generator {
 				String colorString = color.getARGBHex();
 				map.get(pos).addAction(new Action(colorString, sheetNumber));
 			} else
-				map.get(pos).addAction(new Action(Action.Type.White, sheetNumber));
+				map.get(pos).addAction(new Action(Action.Type.Down, sheetNumber));
 		} else
-			map.get(pos).addAction(new Action(Action.Type.Fallback, sheetNumber));
+			map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
 		pos = null;
 	}
 
@@ -157,14 +157,6 @@ public class Generator {
 			if (totalSheets == -1)
 				totalSheets = wb.getNumberOfSheets();
 			for (int ns = 0; ns < totalSheets; ns++) {
-				if (sheetExclusion || syncSimulation) {
-					// Note: exclusion for sheets - Mit
-					if (filename.equals("ET")) {
-						// skip wave pattern
-						if (ns == 4 || ns == 5)
-							continue;
-					}
-				}
 				XSSFSheet sheet = wb.getSheetAt(ns);
 				// Special case: Rocketeer at page ns = 4 has 10 rows
 				int framesPerPage = framesPerRow * (rowsPerPage + ((ns == 4 && filename.equals("Rocketeer")) ? 2 : 0));

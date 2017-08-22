@@ -5,7 +5,7 @@ import java.util.List;
 public class Action {
 	
 	public static enum Type {
-		Blue, Red, Black, White, Down, Fold, Fallback
+		Blue, Red, Black, White, Down, Gold,Error
 	}
 	
 	private final Type type;
@@ -18,45 +18,41 @@ public class Action {
 	
 	public static Color colorWithType(Type type) {
 		switch (type) {
-		case Fold:
-			return Color.decode("#FFFF00");
+		case Error:
+			return Color.decode("#00FF00");
 		case Down:
-			return Color.decode("#FFC000");
+			return Color.decode("#FFFFFF");
 		case Blue:
-			return Color.decode("#0000FF");
+			return Color.decode("#012060");
 		case Red:
-			return Color.decode("#FF0000");
+			return Color.decode("#C00004");
 		case Black:
 			return Color.decode("#000000");
 		case White:
-			return Color.decode("#FFFFFF");
-		case Fallback:
-			return Color.decode("#767676");
+			return Color.decode("#808080");
+		case Gold:
+			return Color.decode("#C55A11");
 		}
 		return null;
 	}
 	
 	public static Type typeWithColor(String color) {
 		switch (color) {
-		case "FFA6A6A6":
-		case "FFFFFF00":
-			return Type.Fold;
-		case "FFF79646":
-		case "FFFFC000":
+		case "FFFFFFFF":
 			return Type.Down;
-		case "FF3333FF":
-		case "FF0000FF":
-		case "FF00B0F0":
+		case "FFFF00FF":
 			return Type.Blue;
-		case "FFFF0000":
+		case "FFFFFF00":
 			return Type.Red;
 		case "FF000000":
 			return Type.Black;
-		case "FFFFFFFF":
+		case "FF0000FF":
 			return Type.White;
+		case "FF00FF00":
+			return Type.Gold;
 		}
 		System.out.println("Null color: " + color);
-		return Type.Fallback;
+		return Type.Error;
 	}
 	
 	public Action(String color, int group) {
@@ -68,15 +64,13 @@ public class Action {
 	}
 	
 	public static List<Type> boldableTypes() {
-		Type[] types = { Type.Blue, Type.Red, Type.Black, Type.White, Type.Down };
+		Type[] types = { Type.Blue, Type.Red, Type.Black, Type.White, Type.Down,Type.Gold };
 		return Arrays.asList(types);
 	}
 	
 	public String toString() {
 		if (type == null)
 			return "null";
-		if (type == Type.Fold)
-			return "";
 		String str = type.toString();
 		return str;
 	}

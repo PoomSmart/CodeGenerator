@@ -76,12 +76,12 @@ public class MainDialog extends JFrame {
 
 		createConstantLabel(frame, ".CODE.", 23, JLabel.RIGHT);
 		createConstantLabel(frame, "Generator", 23, JLabel.LEFT);
-		frame.patternNameField = createTextField(frame, "Filename: ");
-		frame.numRowsField = createTextField(frame, "Rows: ", "8");
+		frame.patternNameField = createTextField(frame, "Filename: ","ของขวัญจากก้อนดิน-New");
+		frame.numRowsField = createTextField(frame, "Rows: ", "9");
 		frame.setNumericTextField(frame.numRowsField);
-		frame.numColsField = createTextField(frame, "Columns: ", "8");
+		frame.numColsField = createTextField(frame, "Columns: ", "9");
 		frame.setNumericTextField(frame.numColsField);
-		frame.rowsPerPageField = createTextField(frame, "Rows per page: ", "8");
+		frame.rowsPerPageField = createTextField(frame, "Rows per page: ", "2");
 		frame.setNumericTextField(frame.rowsPerPageField);
 		frame.framesPerRowField = createTextField(frame, "Frames per row: ", "4");
 		frame.setNumericTextField(frame.framesPerRowField);
