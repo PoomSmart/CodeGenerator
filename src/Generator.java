@@ -60,8 +60,9 @@ public class Generator {
 	 * @param numRows
 	 * @param numCols
 	 */
-	public static void haveAction(Map<CellPosition<String, Integer>, Info> map, XSSFCell cell, int i, int j,
+	public static int haveAction(Map<CellPosition<String, Integer>, Info> map, XSSFCell cell, int i, int j,
 			int numberOfSteps, int numRows, int numCols, int sheetNumber) {
+		int totalFrames = 0;
 		XSSFCellStyle style = cell.getCellStyle();
 		String colorString="";
 		if(style!=null){
@@ -69,7 +70,7 @@ public class Generator {
 			if(color!=null){
 				colorString = color.getARGBHex();
 				if(colorString.equals("FF00B0F0")) //not include
-					return;
+					return totalFrames;
 			}
 			else
 				colorString = "FFFFFFFF"; //down (blank cell)
@@ -83,21 +84,19 @@ public class Generator {
 			map.put(pos, new Info(pos, numberOfSteps, String.format("%dx%d", numRows, numCols), currentMusic));
 		if(colorString.equals("Error"))
 			if(sheetNumber==5||sheetNumber==7)
-				for(int k = 0 ; k<2;k++)
+				for(int k = 0 ; k<2;k++,totalFrames++)
 					map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
 			else
-				for(int k = 0 ; k<4;k++)
+				for(int k = 0 ; k<4;k++,totalFrames++)
 					map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
 		else
 			if(sheetNumber==5||sheetNumber==7)
-				for(int k = 0 ; k<2;k++)
+				for(int k = 0 ; k<2;k++,totalFrames++)
 					map.get(pos).addAction(new Action(colorString, sheetNumber));
 			else
-				for(int k = 0 ; k<4;k++)
+				for(int k = 0 ; k<4;k++,totalFrames++)
 					map.get(pos).addAction(new Action(colorString, sheetNumber));
-				
-		
-		
+		return totalFrames;
 	}
 
 	private static void writeMapToFiles(Map<CellPosition<String, Integer>, Info> map, int fontSize, String outputPath) {
@@ -179,13 +178,11 @@ public class Generator {
 				totalSheets = wb.getNumberOfSheets();
 			for (int ns = 0; ns < totalSheets; ns++) {
 				XSSFSheet sheet = wb.getSheetAt(ns);
-				// Special case: Rocketeer at page ns = 4 has 10 rows
-				int framesPerPage = framesPerRow * (rowsPerPage + ((ns == 4 && filename.equals("Rocketeer")) ? 2 : 0));
+				int framesPerPage = framesPerRow * rowsPerPage;
 				for (int fn = 0; fn < framesPerPage; fn++) {
 					advance = false;
 					int foi = (fn / framesPerRow) * (gap + numRows);
 					int foj = (fn % framesPerRow) * (gap + numCols);
-					totalFrames++;
 					for (int i = 0; i < numRows; i++) {
 						XSSFRow row = sheet.getRow(foi + i);
 						// If the current row is null, it is possible that we read to the end of the animation. So we
@@ -201,7 +198,7 @@ public class Generator {
 						for (int j = 0; j < numCols; j++) {
 							XSSFCell cell = row.getCell(foj + j);
 							if (cell != null)
-								haveAction(map, cell, i, j, framesPerRow, numRows, numCols, ns + 1);
+								totalFrames+=haveAction(map, cell, i, j, framesPerRow, numRows, numCols, ns + 1);
 						}
 					}
 					if (stop || advance)
@@ -210,6 +207,7 @@ public class Generator {
 				if (stop)
 					break;
 			}
+			totalFrames/=numRows*numCols;
 			currentMap = map;
 			if (visualize) {
 				CodeVisualizer vis = new CodeVisualizer(map, new Dimension(numCols, numRows), fps, totalFrames);
