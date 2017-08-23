@@ -60,6 +60,20 @@ public class Info {
 		}
 		sb.append("\n\n");
 	}
+	
+	private static void appendNumberNew(StringBuilder sb, int start, int max) {
+		if (useFormatting)
+			sb.append(String.format(String.format("%%-%ds", stepSpace), start));
+		else
+			sb.append(String.format("%d\t", start));
+		for (int j = 2; j <= max; j++) {
+			if (useFormatting)
+				sb.append(String.format(String.format("%%-%ds", stepSpace), j));
+			else
+				sb.append(String.format("%d\t", j));
+		}
+		sb.append("\n\n");
+	}
 
 	public String toString(boolean debug) {
 		if (debug)
@@ -73,8 +87,14 @@ public class Info {
 		} else
 			sb.append(String.format("Seat: %s\t\t\t\t\t%s", position, music));
 		sb.append("\n");
+		//initial
+		sb.append("\nDown\n");
+		for(int i = 1 ; i<=5;i++){
+			appendNumberNew(sb,i,4);
+			sb.deleteCharAt(sb.length()-1);
+		}
 		int codeGroup = 1;
-		int level = 0;
+		int level = 1;
 		int i = 0;
 		int actionsSize = actions.size();
 		sb.append("\nGroup 1\n\n");
@@ -92,12 +112,12 @@ public class Info {
 			}
 			appendString(sb, fixType(actions.get(i).toString()));
 			perRow++;
-			if (level > 1)
-				level = 0;
+			if (level > 8)
+				level = 1;
 			if (perRow == steps) {
 				perRow = 0;
 				sb.append("\n");
-				appendNumber(sb, level * steps + 1, (level + 1) * steps);
+				appendNumberNew(sb, level, 4);
 				level++;
 			}
 			i++;
