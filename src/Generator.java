@@ -37,6 +37,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLineSpacingRule;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 
 
+
 public class Generator {
 
 	public static boolean writeToFile = true;
@@ -61,25 +62,42 @@ public class Generator {
 	 */
 	public static void haveAction(Map<CellPosition<String, Integer>, Info> map, XSSFCell cell, int i, int j,
 			int numberOfSteps, int numRows, int numCols, int sheetNumber) {
-		// FIXME: validate
+		XSSFCellStyle style = cell.getCellStyle();
+		String colorString="";
+		if(style!=null){
+			XSSFColor color = style.getFillForegroundXSSFColor();
+			if(color!=null){
+				colorString = color.getARGBHex();
+				if(colorString.equals("FF00B0F0")) //not include
+					return;
+			}
+			else
+				colorString = "FFFFFFFF"; //down (blank cell)
+		}
+		else
+			colorString = "Error";
 		int r = numRows - i - 1;
 		int c = numCols - j - 1;
 		CellPosition<String, Integer> pos = new CellPosition<String, Integer>(c, r);
 		if (!map.containsKey(pos))
 			map.put(pos, new Info(pos, numberOfSteps, String.format("%dx%d", numRows, numCols), currentMusic));
-		XSSFCellStyle style = cell.getCellStyle();
-		if (style != null) {
-			XSSFColor color = style.getFillForegroundXSSFColor();
-			if (color != null) {
-				String colorString = color.getARGBHex();
-				if(colorString.equals("FF00B0F0"))
-					return;
-				map.get(pos).addAction(new Action(colorString, sheetNumber));
-			} else
-				map.get(pos).addAction(new Action(Action.Type.Down, sheetNumber));
-		} else
-			map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
-		pos = null;
+		if(colorString.equals("Error"))
+			if(sheetNumber==5||sheetNumber==7)
+				for(int k = 0 ; k<2;k++)
+					map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
+			else
+				for(int k = 0 ; k<4;k++)
+					map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
+		else
+			if(sheetNumber==5||sheetNumber==7)
+				for(int k = 0 ; k<2;k++)
+					map.get(pos).addAction(new Action(colorString, sheetNumber));
+			else
+				for(int k = 0 ; k<4;k++)
+					map.get(pos).addAction(new Action(colorString, sheetNumber));
+				
+		
+		
 	}
 
 	private static void writeMapToFiles(Map<CellPosition<String, Integer>, Info> map, int fontSize, String outputPath) {
