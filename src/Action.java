@@ -5,7 +5,7 @@ import java.util.List;
 public class Action {
 	
 	public static enum Type {
-		Blue, Red, Black, White, Down, Gold,Error
+		Blue, Red, Black, White, Down, Gold,Error, Wave,Shake,Not
 	}
 	
 	private final Type type;
@@ -23,15 +23,21 @@ public class Action {
 		case Down:
 			return Color.decode("#FFFFFF");
 		case Blue:
-			return Color.decode("#012060");
+			return Color.decode("#002060");
 		case Red:
-			return Color.decode("#C00004");
+			return Color.decode("#C00000");
 		case Black:
 			return Color.decode("#000000");
 		case White:
-			return Color.decode("#808080");
+			return Color.decode("#BFBFBF");
 		case Gold:
-			return Color.decode("#C55A11");
+			return Color.decode("#ED7D31");
+		case Wave:
+			return Color.decode("#FFC000");
+		case Not:
+			return Color.decode("#00B0F0");
+		case Shake:
+			return Color.decode("#92D050");
 		}
 		return null;
 	}
@@ -40,16 +46,22 @@ public class Action {
 		switch (color) {
 		case "FFFFFFFF":
 			return Type.Down;
-		case "FFFF00FF":
+		case "FF002060":
 			return Type.Blue;
-		case "FFFFFF00":
+		case "FFC00000":
 			return Type.Red;
 		case "FF000000":
 			return Type.Black;
-		case "FF0000FF":
+		case "FFBFBFBF":
 			return Type.White;
-		case "FF00FF00":
+		case "FFED7D31":
 			return Type.Gold;
+		case "FFFFC000":
+			return Type.Wave;
+		case "FF00B0F0":
+			return Type.Not;
+		case "FF92D050":
+			return Type.Shake;
 		}
 		System.out.println("Null color: " + color);
 		return Type.Error;
@@ -64,7 +76,7 @@ public class Action {
 	}
 	
 	public static List<Type> boldableTypes() {
-		Type[] types = { Type.Blue, Type.Red, Type.Black, Type.White, Type.Down,Type.Gold };
+		Type[] types = { Type.Blue, Type.Red, Type.Black, Type.White, Type.Down,Type.Gold,Type.Not,Type.Shake,Type.Wave };
 		return Arrays.asList(types);
 	}
 	

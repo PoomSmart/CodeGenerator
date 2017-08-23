@@ -36,6 +36,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLineSpacingRule;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 
+
 public class Generator {
 
 	public static boolean writeToFile = true;
@@ -71,6 +72,8 @@ public class Generator {
 			XSSFColor color = style.getFillForegroundXSSFColor();
 			if (color != null) {
 				String colorString = color.getARGBHex();
+				if(colorString.equals("FF00B0F0"))
+					return;
 				map.get(pos).addAction(new Action(colorString, sheetNumber));
 			} else
 				map.get(pos).addAction(new Action(Action.Type.Down, sheetNumber));
