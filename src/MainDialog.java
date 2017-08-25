@@ -91,7 +91,22 @@ public class MainDialog extends JFrame {
 		frame.setNumericTextField(frame.fontSizeField);
 		frame.fpsField = createTextField(frame, "FPS: ", "8");
 		frame.setNumericTextField(frame.fpsField);
-		frame.dualButton = createButton(frame, "Do Both");
+		frame.dualButton = createButton(frame, "One File");
+		frame.dualButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Generator.writeToFile = true;
+				Generator.sheetExclusion = Generator.frameSimplification = false;
+				String fileName = frame.patternNameField.getText().replace(".xlsx", "");
+				int fps = parseInt(frame.fpsField.getText(), 24);
+				int numRows = parseInt(frame.numRowsField.getText(), 8);
+				int numCols = parseInt(frame.numColsField.getText(), 8);
+				int rowsPerPage = parseInt(frame.rowsPerPageField.getText(), 8);
+				int framesPerRow = parseInt(frame.framesPerRowField.getText(), 4);
+				int gap = parseInt(frame.gapField.getText(), 1);
+				int fontSize = parseInt(frame.fontSizeField.getText(), 12);
+				Generator.oneFile(fileName, fps, numRows, numCols, rowsPerPage, -1, framesPerRow, gap, fontSize);
+			}
+		});
 		frame.generateButton = createButton(frame, "Generate");
 		frame.generateButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -103,11 +118,6 @@ public class MainDialog extends JFrame {
 				int numCols = parseInt(frame.numColsField.getText(), 8);
 				int rowsPerPage = parseInt(frame.rowsPerPageField.getText(), 8);
 				int framesPerRow = parseInt(frame.framesPerRowField.getText(), 4);
-				// Fix laziness
-				if (fileName.equals("ET")) {
-					framesPerRow = 3;
-					frame.framesPerRowField.setText(framesPerRow + "");
-				}
 				int gap = parseInt(frame.gapField.getText(), 1);
 				int fontSize = parseInt(frame.fontSizeField.getText(), 12);
 				Generator.workWithPattern(fileName, fps, numRows, numCols, rowsPerPage, -1, framesPerRow, gap, fontSize);

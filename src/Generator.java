@@ -83,19 +83,21 @@ public class Generator {
 		if (!map.containsKey(pos))
 			map.put(pos, new Info(pos, numberOfSteps, String.format("%dx%d", numRows, numCols), currentMusic));
 		if(colorString.equals("Error"))
-			if(sheetNumber==5||sheetNumber==7)
-				for(int k = 0 ; k<2;k++,totalFrames++)
-					map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
-			else
-				for(int k = 0 ; k<4;k++,totalFrames++)
-					map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
+			if(sheetNumber==5||sheetNumber==7){
+				map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
+					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
+			else{
+				map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
+				for(int k = 0 ; k<3;k++,totalFrames++)
+					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
 		else
-			if(sheetNumber==5||sheetNumber==7)
-				for(int k = 0 ; k<2;k++,totalFrames++)
-					map.get(pos).addAction(new Action(colorString, sheetNumber));
-			else
-				for(int k = 0 ; k<4;k++,totalFrames++)
-					map.get(pos).addAction(new Action(colorString, sheetNumber));
+			if(sheetNumber==5||sheetNumber==7){
+				map.get(pos).addAction(new Action(colorString, sheetNumber));
+					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
+			else{
+				map.get(pos).addAction(new Action(colorString, sheetNumber));
+				for(int k = 0 ; k<3;k++,totalFrames++)
+					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
 		return totalFrames;
 	}
 
@@ -238,6 +240,89 @@ public class Generator {
 			ErrorReporter.report(e);
 		}
 		createOutput(filename, map, fontSize);
+	}
+	
+	/**
+	 * work perfectly only for StandCheer2017_CodeGift file this will make output in one file which contain all position sheet code.
+	 * @param filename
+	 * @param fps
+	 * @param numRows
+	 * @param numCols
+	 * @param rowsPerPage
+	 * @param totalSheets
+	 * @param framesPerRow
+	 * @param gap
+	 * @param fontSize
+	 */
+	public static void oneFile(String filename, int fps, int numRows, int numCols, int rowsPerPage,
+			int totalSheets, int framesPerRow, int gap, int fontSize) {
+		createPathIfNecessary("Output/");
+		Map<CellPosition<String, Integer>, Info> map = new TreeMap<CellPosition<String, Integer>, Info>();
+		currentMusic = filename;
+		try {
+			XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream("Input/" + filename + ".xlsx"));
+			boolean stop = false;
+			boolean advance = false;
+			int totalFrames = 0;
+			if (totalSheets == -1)
+				totalSheets = wb.getNumberOfSheets();
+			for (int ns = 0; ns < totalSheets; ns++) {
+				XSSFSheet sheet = wb.getSheetAt(ns);
+				int framesPerPage = framesPerRow * rowsPerPage;
+				for (int fn = 0; fn < framesPerPage; fn++) {
+					advance = false;
+					int foi = (fn / framesPerRow) * (gap + numRows);
+					int foj = (fn % framesPerRow) * (gap + numCols);
+					for (int i = 0; i < numRows; i++) {
+						XSSFRow row = sheet.getRow(foi + i);
+						// If the current row is null, it is possible that we read to the end of the animation. So we
+						// stop here
+						if (row == null) {
+							totalFrames--;
+							if (ns == totalSheets - 1)
+								stop = true;
+							// This page doesn't fill rows, advance to next page
+							advance = true;
+							break;
+						}
+						for (int j = 0; j < numCols; j++) {
+							XSSFCell cell = row.getCell(foj + j);
+							if (cell != null)
+								totalFrames+=haveAction(map, cell, i, j, framesPerRow, numRows, numCols, ns + 1);
+						}
+					}
+					if (stop || advance)
+						break;
+				}
+				if (stop)
+					break;
+			}
+			totalFrames/=numRows*numCols;
+			currentMap = map;
+		} catch (EncryptedDocumentException | IOException e) {
+			ErrorReporter.report(e);
+		}
+		
+		try {
+			String outputPath = "Output/" + filename;
+			createPathIfNecessary(outputPath);
+			XWPFDocument doc = new XWPFDocument();
+			XWPFParagraph paragraph = doc.createParagraph();
+			FileOutputStream stream = new FileOutputStream("Output/" + filename+"/"+filename+".docx");
+			for (Entry<CellPosition<String, Integer>, Info> entry : map.entrySet()) {
+				Info info = entry.getValue();
+				addParagraphFromInfo(info, paragraph, fontSize);
+				XWPFRun run = paragraph.createRun();
+				for(int i = 0 ; i<12;i++)
+					run.addBreak();
+		}
+		doc.write(stream);
+		doc.close();
+		JOptionPane.showMessageDialog(null, "Finished!!!");
+		} 
+		catch (IOException e) {
+		ErrorReporter.report(e);
+		}
 	}
 
 	private static void setSingleLineSpacing(XWPFParagraph paragraph) {

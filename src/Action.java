@@ -5,7 +5,7 @@ import java.util.List;
 public class Action {
 	
 	public static enum Type {
-		Blue, Red, Black, White, Down, Gold,Error, Wave,Shake,Not
+		Blue, Red, Black, White, Down, Gold,Error, Wave,Shake,Not,Empty
 	}
 	
 	private final Type type;
@@ -83,6 +83,8 @@ public class Action {
 	public String toString() {
 		if (type == null)
 			return "null";
+		if (type.equals(type.Empty))
+			return "";
 		String str = type.toString();
 		return str;
 	}
