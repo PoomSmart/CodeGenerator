@@ -87,40 +87,61 @@ public class Info {
 		} else
 			sb.append(String.format("Seat: %s\t\t\t\t\t%s", position, music));
 		sb.append("\n");
-		//initial
-		sb.append("\nDown\n");
-		for(int i = 1 ; i<=5;i++){
-			appendNumberNew(sb,i,4);
-			sb.deleteCharAt(sb.length()-1);
-		}
 		int codeGroup = 1;
-		int level = 1;
+		int level = 0,special_level=1;
 		int i = 0;
 		int actionsSize = actions.size();
 		sb.append("\nGroup 1\n\n");
 		int perRow = 0;
 		int space = 5;
 		do {
-			if (actions.get(i).getGroup() != codeGroup) {
-				// excess steps, got them covered here
-				if (perRow > 0) {
-					sb.append("\n");
-					appendNumber(sb, level * steps + 1, level * steps + perRow);
-					level = 0;
+			if(codeGroup==5 || codeGroup==7){
+				if (actions.get(i).getGroup() != codeGroup) {
+					// excess steps, got them covered here
+					if (perRow > 0) {
+						sb.append("\n");
+						appendNumber(sb, level * steps + 1, level * steps + perRow);
+						level = 0;
+					}
+					if(codeGroup==5)
+						sb.append(String.format("\nGroup %d\n\n", ++codeGroup ));
+					else
+						sb.append(String.format("Group %d\n\n", ++codeGroup ));
 				}
-				sb.append(String.format("Group %d\n\n", ++codeGroup ));
+				appendString(sb, fixType(actions.get(i).toString()));
+				perRow++;
+				if (special_level > 8)
+					special_level = 1;
+				if (perRow == steps) {
+					perRow = 0;
+					sb.append("\n");
+					appendNumberNew(sb, special_level, 4);
+					special_level++;
+				}
+				i++;
 			}
-			appendString(sb, fixType(actions.get(i).toString()));
-			perRow++;
-			if (level > 8)
-				level = 1;
-			if (perRow == steps) {
-				perRow = 0;
-				sb.append("\n");
-				appendNumberNew(sb, level, 4);
-				level++;
+			else{
+				if (actions.get(i).getGroup() != codeGroup) {
+					// excess steps, got them covered here
+					if (perRow > 0) {
+						sb.append("\n");
+						appendNumber(sb, level * steps + 1, level * steps + perRow);
+						level = 0;
+					}
+					sb.append(String.format("Group %d\n\n", ++codeGroup ));
+				}
+				appendString(sb, fixType(actions.get(i).toString()));
+				perRow++;
+				if (level > 1)
+					level = 0;
+				if (perRow == steps) {
+					perRow = 0;
+					sb.append("\n");
+					appendNumber(sb, level*4+1, level*4+4);
+					level++;
+				}
+				i++;
 			}
-			i++;
 		} while (i < actionsSize);
 		// excess steps again, but the case for last group
 		if (perRow > 0) {

@@ -5,7 +5,7 @@ import java.util.List;
 public class Action {
 	
 	public static enum Type {
-		Blue, Red, Black, White, Down, Gold,Error, Wave,Shake,Not,Empty
+		Blue, Red, Black, White, Down, Gold,Error, Wave,Shake,Not,Empty,In,Out
 	}
 	
 	private final Type type;
@@ -32,8 +32,10 @@ public class Action {
 			return Color.decode("#BFBFBF");
 		case Gold:
 			return Color.decode("#ED7D31");
-		case Wave:
+		case Out:
 			return Color.decode("#FFC000");
+		case In:
+			return Color.decode("#FFC100");
 		case Not:
 			return Color.decode("#00B0F0");
 		case Shake:
@@ -57,7 +59,9 @@ public class Action {
 		case "FFED7D31":
 			return Type.Gold;
 		case "FFFFC000":
-			return Type.Wave;
+			return Type.Out;
+		case "FFFFC100":
+			return Type.In;
 		case "FF00B0F0":
 			return Type.Not;
 		case "FF92D050":

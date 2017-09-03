@@ -87,7 +87,7 @@ public class MainDialog extends JFrame {
 		frame.setNumericTextField(frame.framesPerRowField);
 		frame.gapField = createTextField(frame, "Gap size: ", "1");
 		frame.setNumericTextField(frame.gapField);
-		frame.fontSizeField = createTextField(frame, "Font size: ", "7");
+		frame.fontSizeField = createTextField(frame, "Font size: ", "9");
 		frame.setNumericTextField(frame.fontSizeField);
 		frame.fpsField = createTextField(frame, "FPS: ", "8");
 		frame.setNumericTextField(frame.fpsField);
@@ -103,7 +103,7 @@ public class MainDialog extends JFrame {
 				int rowsPerPage = parseInt(frame.rowsPerPageField.getText(), 8);
 				int framesPerRow = parseInt(frame.framesPerRowField.getText(), 4);
 				int gap = parseInt(frame.gapField.getText(), 1);
-				int fontSize = parseInt(frame.fontSizeField.getText(), 12);
+				int fontSize = parseInt(frame.fontSizeField.getText(), 9);
 				Generator.oneFile(fileName, fps, numRows, numCols, rowsPerPage, -1, framesPerRow, gap, fontSize);
 			}
 		});
@@ -119,7 +119,7 @@ public class MainDialog extends JFrame {
 				int rowsPerPage = parseInt(frame.rowsPerPageField.getText(), 8);
 				int framesPerRow = parseInt(frame.framesPerRowField.getText(), 4);
 				int gap = parseInt(frame.gapField.getText(), 1);
-				int fontSize = parseInt(frame.fontSizeField.getText(), 12);
+				int fontSize = parseInt(frame.fontSizeField.getText(), 9);
 				Generator.workWithPattern(fileName, fps, numRows, numCols, rowsPerPage, -1, framesPerRow, gap, fontSize);
 			}
 		});

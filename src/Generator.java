@@ -83,21 +83,20 @@ public class Generator {
 		if (!map.containsKey(pos))
 			map.put(pos, new Info(pos, numberOfSteps, String.format("%dx%d", numRows, numCols), currentMusic));
 		if(colorString.equals("Error"))
-			if(sheetNumber==5||sheetNumber==7){
 				map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
-					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
-			else{
-				map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
-				for(int k = 0 ; k<3;k++,totalFrames++)
-					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
 		else
 			if(sheetNumber==5||sheetNumber==7){
+				if(colorString.equals("FFFFC000")){
+					map.get(pos).addAction(new Action(Action.Type.Out, sheetNumber));
+					map.get(pos).addAction(new Action(Action.Type.In, sheetNumber));
+				}
+				else{
+					map.get(pos).addAction(new Action(colorString, sheetNumber));
+					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));
+				}
+			}
+			else
 				map.get(pos).addAction(new Action(colorString, sheetNumber));
-					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
-			else{
-				map.get(pos).addAction(new Action(colorString, sheetNumber));
-				for(int k = 0 ; k<3;k++,totalFrames++)
-					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
 		return totalFrames;
 	}
 
@@ -313,8 +312,7 @@ public class Generator {
 				Info info = entry.getValue();
 				addParagraphFromInfo(info, paragraph, fontSize);
 				XWPFRun run = paragraph.createRun();
-				for(int i = 0 ; i<12;i++)
-					run.addBreak();
+				run.addBreak(BreakType.PAGE);
 		}
 		doc.write(stream);
 		doc.close();
