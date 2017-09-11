@@ -3,6 +3,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -76,12 +78,12 @@ public class MainDialog extends JFrame {
 
 		createConstantLabel(frame, ".CODE.", 23, JLabel.RIGHT);
 		createConstantLabel(frame, "Generator", 23, JLabel.LEFT);
-		frame.patternNameField = createTextField(frame, "Filename: ","StandCheer2017_CodeGift");
+		frame.patternNameField = createTextField(frame, "Filename: ","CodeSpecial");
 		frame.numRowsField = createTextField(frame, "Rows: ", "9");
 		frame.setNumericTextField(frame.numRowsField);
 		frame.numColsField = createTextField(frame, "Columns: ", "9");
 		frame.setNumericTextField(frame.numColsField);
-		frame.rowsPerPageField = createTextField(frame, "Rows per page: ", "4");
+		frame.rowsPerPageField = createTextField(frame, "Rows per page: ", "7");
 		frame.setNumericTextField(frame.rowsPerPageField);
 		frame.framesPerRowField = createTextField(frame, "Frames per row: ", "4");
 		frame.setNumericTextField(frame.framesPerRowField);
@@ -104,7 +106,15 @@ public class MainDialog extends JFrame {
 				int framesPerRow = parseInt(frame.framesPerRowField.getText(), 4);
 				int gap = parseInt(frame.gapField.getText(), 1);
 				int fontSize = parseInt(frame.fontSizeField.getText(), 12);
-				Generator.oneFile(fileName, fps, numRows, numCols, rowsPerPage, -1, framesPerRow, gap, fontSize);
+				try {
+					Generator.oneFile(fileName, fps, numRows, numCols, rowsPerPage, -1, framesPerRow, gap, fontSize);
+				} catch (FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		frame.generateButton = createButton(frame, "Generate");

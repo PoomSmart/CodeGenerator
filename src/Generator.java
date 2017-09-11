@@ -1,10 +1,12 @@
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -83,21 +85,10 @@ public class Generator {
 		if (!map.containsKey(pos))
 			map.put(pos, new Info(pos, numberOfSteps, String.format("%dx%d", numRows, numCols), currentMusic));
 		if(colorString.equals("Error"))
-			if(sheetNumber==5||sheetNumber==7){
-				map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
-					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
-			else{
-				map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
-				for(int k = 0 ; k<3;k++,totalFrames++)
-					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
+			map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
 		else
-			if(sheetNumber==5||sheetNumber==7){
-				map.get(pos).addAction(new Action(colorString, sheetNumber));
-					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
-			else{
-				map.get(pos).addAction(new Action(colorString, sheetNumber));
-				for(int k = 0 ; k<3;k++,totalFrames++)
-					map.get(pos).addAction(new Action(Action.Type.Empty, sheetNumber));}
+			map.get(pos).addAction(new Action(colorString, sheetNumber));
+		totalFrames++;
 		return totalFrames;
 	}
 
@@ -122,7 +113,7 @@ public class Generator {
 	}
 
 	private static void setFontSize(XWPFRun run, int fontSize) {
-		run.setFontFamily("Consolas");
+		run.setFontFamily("Cordia New");
 		run.setFontSize(fontSize);
 	}
 
@@ -253,9 +244,11 @@ public class Generator {
 	 * @param framesPerRow
 	 * @param gap
 	 * @param fontSize
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 */
 	public static void oneFile(String filename, int fps, int numRows, int numCols, int rowsPerPage,
-			int totalSheets, int framesPerRow, int gap, int fontSize) {
+			int totalSheets, int framesPerRow, int gap, int fontSize) throws FileNotFoundException, IOException {
 		createPathIfNecessary("Output/");
 		Map<CellPosition<String, Integer>, Info> map = new TreeMap<CellPosition<String, Integer>, Info>();
 		currentMusic = filename;
@@ -302,26 +295,51 @@ public class Generator {
 		} catch (EncryptedDocumentException | IOException e) {
 			ErrorReporter.report(e);
 		}
-		
+//		////////////////////////////////////////////////////////////////////
+//		XWPFDocument ori = new XWPFDocument(new FileInputStream("format.docx"));
+//		List<XWPFParagraph> para = ori.getParagraphs();
+//		StringBuilder stb = new StringBuilder();
+//		XWPFDocument doc = new XWPFDocument();
+//		XWPFParagraph paragraph = doc.createParagraph();
+//		XWPFRun run = paragraph.createRun();
+//		for(XWPFParagraph i : para)
+//			stb.append(i.getText()+"\n");
+//		for (Entry<CellPosition<String, Integer>, Info> entry : map.entrySet()) {
+//			String data = stb.toString();
+//			data.replaceFirst("O", entry.getKey().getC()+entry.getKey().getR());
+//			List<Action> info =  entry.getValue().getActions();
+//			for(Action i : info)
+//				data.replaceFirst("O", i.toString());
+//			addParagraphFromData(run,data,paragraph,16);
+//		}
+//		////////////////////////////////////////////////////////////////////
 		try {
 			String outputPath = "Output/" + filename;
 			createPathIfNecessary(outputPath);
+			FileOutputStream stream = new FileOutputStream("Output/" + filename+"/"+filename+".docx");
+			XWPFDocument ori = new XWPFDocument(new FileInputStream("Input/format.docx"));
+			List<XWPFParagraph> para = ori.getParagraphs();
+			StringBuilder stb = new StringBuilder();
 			XWPFDocument doc = new XWPFDocument();
 			XWPFParagraph paragraph = doc.createParagraph();
-			FileOutputStream stream = new FileOutputStream("Output/" + filename+"/"+filename+".docx");
+			XWPFRun run = paragraph.createRun();
+			for(XWPFParagraph i : para)
+				stb.append(i.getText()+"\n");
 			for (Entry<CellPosition<String, Integer>, Info> entry : map.entrySet()) {
-				Info info = entry.getValue();
-				addParagraphFromInfo(info, paragraph, fontSize);
-				XWPFRun run = paragraph.createRun();
-				for(int i = 0 ; i<12;i++)
-					run.addBreak();
-		}
-		doc.write(stream);
-		doc.close();
-		JOptionPane.showMessageDialog(null, "Finished!!!");
+				String data = stb.toString();
+				data = data.replaceFirst("O", entry.getKey().getC()+(1+entry.getKey().getR()));
+				List<Action> info =  entry.getValue().getActions();
+				for(Action i : info)
+					data = data.replaceFirst("O", i.toString());
+				addParagraphFromData(run,data,paragraph,14);
+				run.addBreak(BreakType.COLUMN);
+			}
+			doc.write(stream);
+			doc.close();
+			JOptionPane.showMessageDialog(null, "Finished!!!");
 		} 
 		catch (IOException e) {
-		ErrorReporter.report(e);
+			ErrorReporter.report(e);
 		}
 	}
 
@@ -387,7 +405,7 @@ public class Generator {
 	}
 
 	public static void setTextWithTab(XWPFRun run, String line) {
-		if (line.contains("\t")) {
+		if (line.contains("\t") &&!line.replace("\t", "").isEmpty()) {
 			String[] tlines = line.split("\t");
 			setText(run, tlines[0]);
 			for (int j = 1; j < tlines.length; j++) {
