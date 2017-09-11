@@ -5,7 +5,7 @@ import java.util.List;
 public class Action {
 	
 	public static enum Type {
-		Blue, Red, Black, White, Down, Gold,Error, Wave,Shake,Not,Empty
+		Shake,Yellow,Red,Down,Empty,Error;
 	}
 	
 	private final Type type;
@@ -18,23 +18,15 @@ public class Action {
 	
 	public static Color colorWithType(Type type) {
 		switch (type) {
-		case Error:
-			return Color.decode("#00FF00");
 		case Down:
 			return Color.decode("#FFFFFF");
-		case Blue:
-			return Color.decode("#002060");
 		case Red:
-			return Color.decode("#C00000");
-		case Black:
-			return Color.decode("#000000");
-		case White:
-			return Color.decode("#BFBFBF");
-		case Gold:
-			return Color.decode("#ED7D31");
-		case Wave:
+			return Color.decode("#FF5A04");
+		case Yellow:
 			return Color.decode("#FFC000");
-		case Not:
+		case Error:
+			return Color.decode("#00FF00");
+		case Empty:
 			return Color.decode("#00B0F0");
 		case Shake:
 			return Color.decode("#92D050");
@@ -46,22 +38,14 @@ public class Action {
 		switch (color) {
 		case "FFFFFFFF":
 			return Type.Down;
-		case "FF002060":
-			return Type.Blue;
-		case "FFC00000":
+		case "FFFF5A04":
 			return Type.Red;
-		case "FF000000":
-			return Type.Black;
-		case "FFBFBFBF":
-			return Type.White;
-		case "FFED7D31":
-			return Type.Gold;
 		case "FFFFC000":
-			return Type.Wave;
-		case "FF00B0F0":
-			return Type.Not;
+			return Type.Yellow;
 		case "FF92D050":
 			return Type.Shake;
+		case "FF00B0F0":
+			return Type.Empty;
 		}
 		System.out.println("Null color: " + color);
 		return Type.Error;
@@ -76,7 +60,7 @@ public class Action {
 	}
 	
 	public static List<Type> boldableTypes() {
-		Type[] types = { Type.Blue, Type.Red, Type.Black, Type.White, Type.Down,Type.Gold,Type.Not,Type.Shake,Type.Wave };
+		Type[] types = { Type.Red, Type.Yellow, Type.Down,Type.Empty,Type.Shake};
 		return Arrays.asList(types);
 	}
 	

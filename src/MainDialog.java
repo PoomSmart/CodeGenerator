@@ -78,7 +78,7 @@ public class MainDialog extends JFrame {
 
 		createConstantLabel(frame, ".CODE.", 23, JLabel.RIGHT);
 		createConstantLabel(frame, "Generator", 23, JLabel.LEFT);
-		frame.patternNameField = createTextField(frame, "Filename: ","CodeSpecial");
+		frame.patternNameField = createTextField(frame, "Filename: ","2017_Stand_Code_NearDown");
 		frame.numRowsField = createTextField(frame, "Rows: ", "9");
 		frame.setNumericTextField(frame.numRowsField);
 		frame.numColsField = createTextField(frame, "Columns: ", "9");
