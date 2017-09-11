@@ -97,7 +97,7 @@ public class Generator {
 			}
 			else
 				map.get(pos).addAction(new Action(colorString, sheetNumber));
-		return totalFrames;
+		return totalFrames+2;
 	}
 
 	private static void writeMapToFiles(Map<CellPosition<String, Integer>, Info> map, int fontSize, String outputPath) {

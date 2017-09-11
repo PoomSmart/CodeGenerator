@@ -5,7 +5,7 @@ public class Info {
 
 	private static final int stepSpace = 7;
 	public static final boolean useFormatting = true;
-
+	String[] groupName = {"flip","flip","flip","fold","flip","flip","flip and hold (out in)","flip"};
 	private final CellPosition<String, Integer> position;
 	private final String music;
 	private final String dimension;
@@ -91,7 +91,7 @@ public class Info {
 		int level = 0,special_level=1;
 		int i = 0;
 		int actionsSize = actions.size();
-		sb.append("\nGroup 1\n\n");
+		sb.append("\nGroup 1  "+groupName[0]+"\n\n");
 		int perRow = 0;
 		int space = 5;
 		do {
@@ -103,10 +103,7 @@ public class Info {
 						appendNumber(sb, level * steps + 1, level * steps + perRow);
 						level = 0;
 					}
-					if(codeGroup==5)
-						sb.append(String.format("\nGroup %d\n\n", ++codeGroup ));
-					else
-						sb.append(String.format("Group %d\n\n", ++codeGroup ));
+						sb.append(String.format("Group %d  "+groupName[codeGroup]+"\n\n", ++codeGroup ));
 				}
 				appendString(sb, fixType(actions.get(i).toString()));
 				perRow++;
@@ -128,7 +125,7 @@ public class Info {
 						appendNumber(sb, level * steps + 1, level * steps + perRow);
 						level = 0;
 					}
-					sb.append(String.format("Group %d\n\n", ++codeGroup ));
+					sb.append(String.format("Group %d  "+groupName[codeGroup]+"\n\n", ++codeGroup ));
 				}
 				appendString(sb, fixType(actions.get(i).toString()));
 				perRow++;
