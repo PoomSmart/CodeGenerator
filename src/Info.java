@@ -103,7 +103,7 @@ public class Info {
 						appendNumber(sb, level * steps + 1, level * steps + perRow);
 						level = 0;
 					}
-						sb.append(String.format("Group %d  "+groupName[codeGroup]+"\n\n", ++codeGroup ));
+						sb.append(String.format("\nGroup %d  "+groupName[codeGroup]+"\n\n", ++codeGroup ));
 				}
 				appendString(sb, fixType(actions.get(i).toString()));
 				perRow++;
@@ -125,7 +125,7 @@ public class Info {
 						appendNumber(sb, level * steps + 1, level * steps + perRow);
 						level = 0;
 					}
-					sb.append(String.format("Group %d  "+groupName[codeGroup]+"\n\n", ++codeGroup ));
+					sb.append(String.format("\nGroup %d  "+groupName[codeGroup]+"\n\n", ++codeGroup ));
 				}
 				appendString(sb, fixType(actions.get(i).toString()));
 				perRow++;
