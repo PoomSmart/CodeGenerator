@@ -95,7 +95,7 @@ public class Info {
 		int perRow = 0;
 		int space = 5;
 		do {
-			if(codeGroup==5 || codeGroup==7){
+			if(codeGroup==7){
 				if (actions.get(i).getGroup() != codeGroup) {
 					// excess steps, got them covered here
 					if (perRow > 0) {
@@ -125,7 +125,10 @@ public class Info {
 						appendNumber(sb, level * steps + 1, level * steps + perRow);
 						level = 0;
 					}
-					sb.append(String.format("\nGroup %d  "+groupName[codeGroup]+"\n\n", ++codeGroup ));
+					if(codeGroup+1==7)
+						sb.append(String.format("\n\nGroup %d  "+groupName[codeGroup]+"\n\n", ++codeGroup ));
+					else
+						sb.append(String.format("\nGroup %d  "+groupName[codeGroup]+"\n\n", ++codeGroup ));
 				}
 				appendString(sb, fixType(actions.get(i).toString()));
 				perRow++;

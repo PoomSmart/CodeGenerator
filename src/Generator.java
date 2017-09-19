@@ -85,7 +85,7 @@ public class Generator {
 		if(colorString.equals("Error"))
 				map.get(pos).addAction(new Action(Action.Type.Error, sheetNumber));
 		else
-			if(sheetNumber==5||sheetNumber==7){
+			if(sheetNumber==7){
 				if(colorString.equals("FFFFC000")){
 					map.get(pos).addAction(new Action(Action.Type.Out, sheetNumber));
 					map.get(pos).addAction(new Action(Action.Type.In, sheetNumber));
